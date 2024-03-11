@@ -10,6 +10,7 @@ import lombok.Setter;
 @Setter
 @Entity
 @Table(name = "posts")
+@Inheritance(strategy = InheritanceType.SINGLE_TABLE)
 public abstract class Post {
     @jakarta.persistence.Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
