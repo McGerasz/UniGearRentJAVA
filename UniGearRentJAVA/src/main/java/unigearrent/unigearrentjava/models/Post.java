@@ -4,6 +4,10 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
 import lombok.Setter;
+import org.apache.catalina.User;
+
+import java.util.ArrayList;
+import java.util.List;
 
 @NoArgsConstructor
 @Getter
@@ -24,4 +28,7 @@ public abstract class Post {
     private Integer SecurityDeposit;
     @ManyToOne(fetch = FetchType.LAZY)
     private LessorDetails LessorDetails;
+
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
+    private List<UserDetails> Users = new ArrayList<UserDetails>();
 }
