@@ -17,7 +17,7 @@ public abstract class Post {
     private String Name;
     private String Location;
     private String PosterId;
-    private String Descrpition;
+    private String Description;
     private Integer HourlyPrice;
     private Integer DailyPrice;
     private Integer SecurityDeposit;
