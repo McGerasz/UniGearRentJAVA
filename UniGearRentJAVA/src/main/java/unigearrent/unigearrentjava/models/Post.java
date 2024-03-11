@@ -22,4 +22,6 @@ public abstract class Post {
     private Integer HourlyPrice;
     private Integer DailyPrice;
     private Integer SecurityDeposit;
+    @ManyToOne(fetch = FetchType.LAZY)
+    private LessorDetails LessorDetails;
 }
