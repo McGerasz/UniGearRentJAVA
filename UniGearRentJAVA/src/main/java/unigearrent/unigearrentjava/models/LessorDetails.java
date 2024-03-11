@@ -18,5 +18,5 @@ public class LessorDetails {
     private String PosterId;
     private String Name;
     @OneToMany(mappedBy = "LessorDetails",cascade = CascadeType.ALL, orphanRemoval = true)
-    private List<Post> Posts = new ArrayList<Post>();
+    private List<Post> Posts = new ArrayList<>();
 }

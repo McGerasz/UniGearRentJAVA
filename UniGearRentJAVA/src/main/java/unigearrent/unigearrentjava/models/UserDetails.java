@@ -20,5 +20,5 @@ public class UserDetails {
     private String FirstName;
     private String LastName;
     @ManyToMany(mappedBy = "Users")
-    private List<Post> FavouriteIDs = new ArrayList<Post>();
+    private List<Post> FavouriteIDs = new ArrayList<>();
 }
