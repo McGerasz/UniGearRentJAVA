@@ -16,7 +16,7 @@ import java.util.List;
 public class UserDetails {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
-    private String Id;
+    private Integer Id;
     private String FirstName;
     private String LastName;
     @ManyToMany(mappedBy = "Users")
