@@ -15,7 +15,8 @@ import java.util.List;
 @Table(name = "lessor_details")
 public class LessorDetails {
     @Id
-    private String PosterId;
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
+    private Integer PosterId;
     private String Name;
     @OneToMany(mappedBy = "LessorDetails",cascade = CascadeType.ALL, orphanRemoval = true)
     private List<Post> Posts = new ArrayList<>();
