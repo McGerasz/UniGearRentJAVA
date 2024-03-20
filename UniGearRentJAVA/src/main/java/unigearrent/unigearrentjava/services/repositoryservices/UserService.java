@@ -79,10 +79,10 @@ public class UserService {
             if (existingUser == null) {
                 throw new IllegalArgumentException("User with ID " + user.getId() + " not found");
             }
-            existingUser.setName(user.getName());
             existingUser.setUsername(user.getUsername());
             existingUser.setEmail(user.getEmail());
             existingUser.setPassword(user.getPassword());
+            existingUser.setPhoneNumber(user.getPhoneNumber());
             return userRepository.save(existingUser);
         } catch (Exception e) {
             throw new RuntimeException("Error updating user", e);
