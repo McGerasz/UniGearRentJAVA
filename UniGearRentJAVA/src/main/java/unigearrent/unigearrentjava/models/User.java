@@ -25,13 +25,13 @@ public class User implements UserDetails {
     @Column(name="user_id")
     private Integer id;
 
-    private String name;
-
     @Column(unique = true)
     private String username;
 
     private String email;
 
+    @Column(unique = true)
+    private String PhoneNumber;
 
     @Column(name = "avatar_url")
     private String avatarUrl;
@@ -40,12 +40,7 @@ public class User implements UserDetails {
     @JsonIgnore
     private String password;
 
-    @ManyToMany(fetch = FetchType.EAGER)
-    @JoinTable(
-            name = "user_role_junction",
-            joinColumns = @JoinColumn(name = "user_id"),
-            inverseJoinColumns = @JoinColumn(name = "role_id")
-    )
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
     private Set<Role> authorities;
 
 

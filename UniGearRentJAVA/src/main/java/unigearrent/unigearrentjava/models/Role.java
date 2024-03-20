@@ -6,12 +6,14 @@ import lombok.Data;
 import lombok.NoArgsConstructor;
 import org.springframework.security.core.GrantedAuthority;
 
+import java.util.List;
+
 @Data
 @Entity
 @Table(name = "roles")
 @AllArgsConstructor
 @NoArgsConstructor
-public class Role  implements GrantedAuthority {
+public class Role implements GrantedAuthority {
     @Id
     @GeneratedValue(strategy = GenerationType.IDENTITY)
     @Column(name="role_id")
@@ -19,7 +21,8 @@ public class Role  implements GrantedAuthority {
 
     private String authority;
 
-
+    @ManyToMany(mappedBy = "authorities")
+    private List<User> users;
     public Role(String authority)
     {
         this.authority = authority;
