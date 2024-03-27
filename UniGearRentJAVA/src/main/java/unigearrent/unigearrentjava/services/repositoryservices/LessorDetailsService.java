@@ -17,7 +17,7 @@ public class LessorDetailsService {
     public LessorDetailsService(ILessorDetailsRepository repository){
         _repository = repository;
     }
-    public LessorDetails SaveCar(LessorDetails details){
+    public LessorDetails SaveLessorDetails(LessorDetails details){
         return _repository.save(details);
     }
     public List<LessorDetails> GetAll(){
