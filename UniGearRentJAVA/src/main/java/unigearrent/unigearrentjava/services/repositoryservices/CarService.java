@@ -6,6 +6,7 @@ import unigearrent.unigearrentjava.models.CarPost;
 import unigearrent.unigearrentjava.repositories.ICarRepository;
 
 import java.util.List;
+import java.util.Optional;
 
 @Service
 public class CarService {
@@ -22,9 +23,9 @@ public class CarService {
     public List<CarPost> GetAll(){
         return _repository.findAll();
     }
-    public CarPost GetById(Integer id){
+    public Optional<CarPost> GetById(Integer id){
         try{
-            return _repository.getById(id);
+            return _repository.findById(id);
         }
         catch (Exception e){
             throw new RuntimeException("Error getting car with id " + id);
@@ -34,7 +35,7 @@ public class CarService {
         _repository.delete(post);
     }
     public void Update(CarPost post){
-        CarPost existingPost = GetById(post.getId());
+        CarPost existingPost = GetById(post.getId()).get();
         existingPost.setName(post.getName());
         existingPost.setLocation(post.getLocation());
         existingPost.setPosterId(post.getPosterId());

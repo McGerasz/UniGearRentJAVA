@@ -8,8 +8,11 @@ import org.springframework.validation.BindingResult;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import unigearrent.unigearrentjava.models.*;
+import unigearrent.unigearrentjava.repositories.ILessorDetailsRepository;
 import unigearrent.unigearrentjava.repositories.IUserRepository;
 import unigearrent.unigearrentjava.services.authentication.AuthenticationService;
+import unigearrent.unigearrentjava.services.repositoryservices.LessorDetailsService;
+import unigearrent.unigearrentjava.services.repositoryservices.UserService;
 
 import java.util.Objects;
 
@@ -19,6 +22,10 @@ import java.util.Objects;
 public class AuthController {
     @Autowired
     private AuthenticationService authenticationService;
+    @Autowired
+    private ILessorDetailsRepository lessorDetailsService;
+    @Autowired
+    private UserService userService;
     @PostMapping("/RegisterUser")
     public ResponseEntity<?> RegisterUser(@Validated @RequestBody UserRegistrationRequestDTO body, @NotNull BindingResult bindingResult)
     {
@@ -27,9 +34,7 @@ public class AuthController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("Invalid register request");
         }
         try {
-            System.out.println(body.getPassword());
             authenticationService.registerUser(body.getUsername(), body.getEmail(), body.getPassword(), body.getPhoneNumber());
-
             return ResponseEntity.status(HttpStatus.OK).body(new RegistrationResponseDTO(body.getUsername(), body.getEmail(), body.getPhoneNumber()));
 
         }catch (Exception e)
@@ -47,7 +52,11 @@ public class AuthController {
         }
         try {
             authenticationService.registerLessor(body.getUsername(), body.getEmail(), body.getPassword(), body.getPhoneNumber());
-
+            Integer id = userService.getUserByUsername(body.getUsername()).getId();
+            LessorDetails details = new LessorDetails();
+            details.setName(body.getName());
+            details.setPosterId(id);
+            lessorDetailsService.save(details);
             return ResponseEntity.status(HttpStatus.OK).body(new RegistrationResponseDTO(body.getUsername(), body.getEmail(), body.getPhoneNumber()));
 
         }catch (Exception e)
