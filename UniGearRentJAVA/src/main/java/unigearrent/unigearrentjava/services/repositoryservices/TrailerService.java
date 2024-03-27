@@ -7,6 +7,8 @@ import unigearrent.unigearrentjava.repositories.ICarRepository;
 import unigearrent.unigearrentjava.repositories.ITrailerRepository;
 
 import java.util.List;
+import java.util.Optional;
+
 @Service
 public class TrailerService {
     @Autowired
@@ -16,15 +18,15 @@ public class TrailerService {
     public TrailerService(ITrailerRepository repository){
         _repository = repository;
     }
-    public TrailerPost SaveCar(TrailerPost post){
+    public TrailerPost SaveTrailer(TrailerPost post){
         return _repository.save(post);
     }
     public List<TrailerPost> GetAll(){
         return _repository.findAll();
     }
-    public TrailerPost GetById(Integer id){
+    public Optional<TrailerPost> GetById(Integer id){
         try{
-            return _repository.getById(id);
+            return _repository.findById(id);
         }
         catch (Exception e){
             throw new RuntimeException("Error getting car with id " + id);
@@ -34,7 +36,7 @@ public class TrailerService {
         _repository.delete(post);
     }
     public void Update(TrailerPost post){
-        TrailerPost existingPost = GetById(post.getId());
+        TrailerPost existingPost = GetById(post.getId()).get();
         existingPost.setName(post.getName());
         existingPost.setLocation(post.getLocation());
         existingPost.setPosterId(post.getPosterId());
