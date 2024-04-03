@@ -36,7 +36,9 @@ public class CarController {
     @PostMapping()
     public ResponseEntity<?> PostCar(@RequestBody CarPost post, @RequestParam String username){
         try{
-            post.setPosterId(userService.getUserByUsername(username).getId());
+            Integer id = userService.getUserByUsername(username).getId();
+            post.setPosterId(id);
+            post.setLessorDetails(lessorDetailsService.GetById(id));
             carService.SaveCar(post);
             return  ResponseEntity.status(HttpStatus.CREATED).body(null);
         }
