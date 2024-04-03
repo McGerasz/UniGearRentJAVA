@@ -25,7 +25,7 @@ public class TrailerController {
     @Autowired
     private UserService userService;
     @GetMapping("/{id}")
-    public ResponseEntity<?> GetCar(@PathVariable Integer id){
+    public ResponseEntity<?> GetTrailer(@PathVariable Integer id){
         try{
             Optional<TrailerPost> post = trailerService.GetById(id);
             return ResponseEntity.status(HttpStatus.OK).body(post.get());
@@ -35,9 +35,11 @@ public class TrailerController {
         }
     }
     @PostMapping()
-    public ResponseEntity<?> PostCar(@RequestBody TrailerPost post, @RequestParam String username){
+    public ResponseEntity<?> PostTrailer(@RequestBody TrailerPost post, @RequestParam String username){
         try{
-            post.setPosterId(userService.getUserByUsername(username).getId());
+            Integer id = userService.getUserByUsername(username).getId();
+            post.setPosterId(id);
+            post.setLessorDetails(lessorDetailsService.GetById(id));
             trailerService.SaveTrailer(post);
             return  ResponseEntity.status(HttpStatus.CREATED).body(null);
         }
@@ -46,7 +48,7 @@ public class TrailerController {
         }
     }
     @DeleteMapping("/{id}")
-    public ResponseEntity<?> DeleteCar(@PathVariable Integer id){
+    public ResponseEntity<?> DeleteTrailer(@PathVariable Integer id){
         try{
             Optional<TrailerPost> post = trailerService.GetById(id);
             trailerService.Delete(post.get());
@@ -57,7 +59,7 @@ public class TrailerController {
         }
     }
     @PutMapping()
-    public ResponseEntity<?> PutCar(@RequestBody TrailerPost post){
+    public ResponseEntity<?> PutTrailer(@RequestBody TrailerPost post){
         try {
             trailerService.Update(post);
             return ResponseEntity.status(HttpStatus.OK).body("");
