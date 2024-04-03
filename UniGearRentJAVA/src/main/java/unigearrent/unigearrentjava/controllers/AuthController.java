@@ -66,7 +66,7 @@ public class AuthController {
 
     }
 
-    @PostMapping("/login")
+    @PostMapping("/Login")
     public ResponseEntity<?> LoginUser(@Validated @RequestBody LoginRequestDTO body, @NotNull BindingResult bindingResult)
     {
         if(bindingResult.hasErrors())
