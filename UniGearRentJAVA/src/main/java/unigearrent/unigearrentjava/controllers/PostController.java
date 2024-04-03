@@ -26,6 +26,8 @@ public class PostController {
     private TrailerService trailerService;
     @Autowired
     private LessorDetailsService lessorDetailsService;
+    @Autowired
+    private UserService userService;
     @GetMapping("/byName/{name}")
     public ResponseEntity<?> GetByName(@PathVariable String name){
         List<Object> postList = new ArrayList<>();
@@ -40,6 +42,15 @@ public class PostController {
         List<Object> postList = new ArrayList<>(carService.GetAll().stream().filter(post -> post.getLocation().toLowerCase().contains(location.toLowerCase())).toList());
         postList.addAll(trailerService.GetAll().stream().filter(trailerPost -> trailerPost.getLocation().toLowerCase().contains(location.toLowerCase())).toList());
         return ResponseEntity.status(HttpStatus.OK).body(postList);
-
+    }
+    @GetMapping("/byUser/{user}")
+    public ResponseEntity<?> GetByUsername(@PathVariable String user){
+        try {
+            Integer userId = userService.getUserByUsername(user).getId();
+            return ResponseEntity.status(HttpStatus.OK).body(lessorDetailsService.GetById(userId).getPosts());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
     }
 }
