@@ -57,7 +57,7 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
     }
-    @PutMapping()
+    @PutMapping("/")
     public ResponseEntity<?> PutCar(@RequestBody CarPost post){
         try {
             carService.Update(post);

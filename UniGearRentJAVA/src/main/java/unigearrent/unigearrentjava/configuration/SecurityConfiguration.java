@@ -56,6 +56,8 @@ public class SecurityConfiguration {
                 .csrf(csrf -> csrf.disable())
                 .authorizeHttpRequests(auth -> {
                     auth.requestMatchers("/api/Auth/**").permitAll();
+                    //auth.requestMatchers("/api/Car/").hasRole("LESSOR");
+                    //auth.requestMatchers("/api/Trailer/").hasRole("LESSOR");
                     auth.anyRequest().permitAll();
                 })
                 .oauth2ResourceServer(oauth2 -> oauth2
