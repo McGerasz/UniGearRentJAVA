@@ -58,7 +58,7 @@ public class TrailerController {
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
         }
     }
-    @PutMapping()
+    @PutMapping("/")
     public ResponseEntity<?> PutTrailer(@RequestBody TrailerPost post){
         try {
             trailerService.Update(post);
