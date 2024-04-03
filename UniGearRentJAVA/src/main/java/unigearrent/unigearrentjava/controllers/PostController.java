@@ -5,7 +5,10 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
+import unigearrent.unigearrentjava.models.CarPost;
 import unigearrent.unigearrentjava.models.LessorDetails;
+import unigearrent.unigearrentjava.models.Post;
+import unigearrent.unigearrentjava.models.TrailerPost;
 import unigearrent.unigearrentjava.services.repositoryservices.CarService;
 import unigearrent.unigearrentjava.services.repositoryservices.LessorDetailsService;
 import unigearrent.unigearrentjava.services.repositoryservices.TrailerService;
@@ -64,5 +67,23 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No entity with the provided id was found");
         }
         return ResponseEntity.status(HttpStatus.OK).body(post);
+    }
+    @GetMapping("/lessorDetails/{id}")
+    public ResponseEntity<?> GetLessorDetailsByPostId(@PathVariable Integer id){
+        Integer posterId;
+        Optional<CarPost> carPost = carService.GetById(id);
+        if(carPost.isPresent()){
+            posterId = carPost.get().getPosterId();
+        }
+        else{
+            Optional<TrailerPost> trailerPost = trailerService.GetById(id);
+            if(trailerPost.isPresent()){
+                posterId = trailerPost.get().getPosterId();
+            }
+            else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No entity with the provided id was found");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(lessorDetailsService.GetById(posterId));
     }
 }
