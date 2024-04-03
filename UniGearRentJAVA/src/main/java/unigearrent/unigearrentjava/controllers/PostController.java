@@ -14,6 +14,7 @@ import unigearrent.unigearrentjava.services.repositoryservices.UserService;
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
 import java.util.List;
+import java.util.Optional;
 import java.util.stream.Collectors;
 
 @RestController
@@ -52,5 +53,16 @@ public class PostController {
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
+    }
+    @GetMapping("{id}")
+    public ResponseEntity<?> GetById(@PathVariable Integer id){
+        Optional<Object> post = Optional.ofNullable(carService.GetById(id));
+        if(post.get() == Optional.empty()){
+            post = Optional.ofNullable(trailerService.GetById(id));
+        }
+        if(post.get() == Optional.empty()){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No entity with the provided id was found");
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(post);
     }
 }
