@@ -102,7 +102,7 @@ public class AuthenticationService {
         try{
 
             Authentication auth = authenticationManager.authenticate(new UsernamePasswordAuthenticationToken(email, password));
-            String token = tokenService.generateJwt(auth, userRepository.getUserByEmail(email).get().getUserId());
+            String token = tokenService.generateJwt(auth, userRepository.getUserByEmail(email).get());
 
             User user = userRepository.getUserByEmail(email).get();
             return new LoginResponseDTO(user.getUsername(), user.getPhoneNumber(), token, user.getId());
