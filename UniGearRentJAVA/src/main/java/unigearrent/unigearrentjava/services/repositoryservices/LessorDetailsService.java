@@ -40,4 +40,7 @@ public class LessorDetailsService {
         existingDetails.setPosts(details.getPosts());
         _repository.save(existingDetails);
     }
+    public List<LessorDetails> GetContainingName(String name){
+        return _repository.findAll().stream().filter(details -> details.getName().toLowerCase().contains(name.toLowerCase())).toList();
+    }
 }
