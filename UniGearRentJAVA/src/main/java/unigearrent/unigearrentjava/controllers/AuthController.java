@@ -9,11 +9,13 @@ import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 import unigearrent.unigearrentjava.models.*;
 import unigearrent.unigearrentjava.repositories.ILessorDetailsRepository;
+import unigearrent.unigearrentjava.repositories.IUserDetailsRepository;
 import unigearrent.unigearrentjava.repositories.IUserRepository;
 import unigearrent.unigearrentjava.services.authentication.AuthenticationService;
 import unigearrent.unigearrentjava.services.repositoryservices.LessorDetailsService;
 import unigearrent.unigearrentjava.services.repositoryservices.UserService;
 
+import java.util.ArrayList;
 import java.util.Objects;
 
 @RestController
@@ -25,6 +27,8 @@ public class AuthController {
     @Autowired
     private ILessorDetailsRepository lessorDetailsService;
     @Autowired
+    private IUserDetailsRepository userDetailsService;
+    @Autowired
     private UserService userService;
     @PostMapping("/RegisterUser")
     public ResponseEntity<?> RegisterUser(@Validated @RequestBody UserRegistrationRequestDTO body, @NotNull BindingResult bindingResult)
@@ -35,6 +39,12 @@ public class AuthController {
         }
         try {
             authenticationService.registerUser(body.getUsername(), body.getEmail(), body.getPassword(), body.getPhoneNumber());
+            Integer id = userService.getUserByUsername(body.getUsername()).getId();
+            UserDetails userDetails = new UserDetails();
+            userDetails.setFirstName(body.getFirstName());
+            userDetails.setLastName(body.getLastName());
+            userDetails.setId(id);
+            userDetailsService.save(userDetails);
             return ResponseEntity.status(HttpStatus.OK).body(new RegistrationResponseDTO(body.getUsername(), body.getEmail(), body.getPhoneNumber()));
 
         }catch (Exception e)

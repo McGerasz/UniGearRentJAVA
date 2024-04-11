@@ -5,14 +5,8 @@ import org.springframework.http.HttpStatus;
 import org.springframework.http.HttpStatusCode;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
-import unigearrent.unigearrentjava.models.CarPost;
-import unigearrent.unigearrentjava.models.LessorDetails;
-import unigearrent.unigearrentjava.models.Post;
-import unigearrent.unigearrentjava.models.TrailerPost;
-import unigearrent.unigearrentjava.services.repositoryservices.CarService;
-import unigearrent.unigearrentjava.services.repositoryservices.LessorDetailsService;
-import unigearrent.unigearrentjava.services.repositoryservices.TrailerService;
-import unigearrent.unigearrentjava.services.repositoryservices.UserService;
+import unigearrent.unigearrentjava.models.*;
+import unigearrent.unigearrentjava.services.repositoryservices.*;
 
 import java.net.http.HttpResponse;
 import java.util.ArrayList;
@@ -30,6 +24,8 @@ public class PostController {
     private TrailerService trailerService;
     @Autowired
     private LessorDetailsService lessorDetailsService;
+    @Autowired
+    private UserDetailsService userDetailsService;
     @Autowired
     private UserService userService;
     @GetMapping("/byName/{name}")
@@ -85,5 +81,89 @@ public class PostController {
             }
         }
         return ResponseEntity.status(HttpStatus.OK).body(lessorDetailsService.GetById(posterId));
+    }
+    @PostMapping("/favourite")
+    public ResponseEntity<?> PostFavourite(@RequestParam String userName, @RequestParam Integer postId){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        Optional<CarPost> carPost = carService.GetById(postId);
+        if(carPost.isPresent()){
+            carPost.get().getUsers().add(details);
+            details.getFavouriteIDs().add(carPost.get());
+            carService.Update(carPost.get());
+        }
+        else {
+            Optional<TrailerPost> trailerPost = trailerService.GetById(postId);
+            if (trailerPost.isPresent()) {
+                trailerPost.get().getUsers().add(details);
+                details.getFavouriteIDs().add(trailerPost.get());
+                trailerService.Update(trailerPost.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No post with the id " + postId.toString() + " was found");
+            }
+        }
+        userDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("OK");
+    }
+    @GetMapping("/getFavourites/{userName}")
+    public ResponseEntity<?> GetFavourites(@PathVariable String userName){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        return ResponseEntity.status(HttpStatus.OK).body(details.getFavouriteIDs());
+    }
+    @GetMapping("/isFavourite")
+    public ResponseEntity<?> IsFavourite(@RequestParam String userName, @RequestParam Integer Id){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        Boolean isPresent = details.getFavouriteIDs().stream().anyMatch(post -> post.getId() == Id);
+        return ResponseEntity.status(HttpStatus.OK).body(isPresent);
+    }
+    @DeleteMapping("/favourite")
+    public ResponseEntity<?> DeleteFavourite(@RequestParam String userName, @RequestParam Integer postId){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        Optional<CarPost> carPost = carService.GetById(postId);
+        if(carPost.isPresent()){
+            carPost.get().getUsers().remove(details);
+            carService.Update(carPost.get());
+        }
+        else {
+            Optional<TrailerPost> trailerPost = trailerService.GetById(postId);
+            if (trailerPost.isPresent()) {
+                trailerPost.get().getUsers().remove(details);
+                trailerService.Update(trailerPost.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No post with the id " + postId.toString() + " was found");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
 }
