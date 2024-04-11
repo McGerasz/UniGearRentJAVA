@@ -139,4 +139,31 @@ public class PostController {
         Boolean isPresent = details.getFavouriteIDs().stream().anyMatch(post -> post.getId() == Id);
         return ResponseEntity.status(HttpStatus.OK).body(isPresent);
     }
+    @DeleteMapping("/favourite")
+    public ResponseEntity<?> DeleteFavourite(@RequestParam String userName, @RequestParam Integer postId){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        Optional<CarPost> carPost = carService.GetById(postId);
+        if(carPost.isPresent()){
+            carPost.get().getUsers().remove(details);
+            carService.Update(carPost.get());
+        }
+        else {
+            Optional<TrailerPost> trailerPost = trailerService.GetById(postId);
+            if (trailerPost.isPresent()) {
+                trailerPost.get().getUsers().remove(details);
+                trailerService.Update(trailerPost.get());
+            } else {
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No post with the id " + postId.toString() + " was found");
+            }
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("Deleted");
+    }
 }
