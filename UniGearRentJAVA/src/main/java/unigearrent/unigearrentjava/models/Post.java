@@ -43,6 +43,6 @@ public abstract class Post {
     private LessorDetails LessorDetails;
 
     @JsonIgnore
-    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH})
+    @ManyToMany(cascade = {CascadeType.MERGE, CascadeType.DETACH, CascadeType.PERSIST})
     private List<UserDetails> Users = new ArrayList<>();
 }
