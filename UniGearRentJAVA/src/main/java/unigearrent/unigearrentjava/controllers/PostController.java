@@ -83,7 +83,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body(lessorDetailsService.GetById(posterId));
     }
     @PostMapping("/favourite")
-    public ResponseEntity<?> PostFavourite(@RequestParam String userName, @RequestParam Integer id){
+    public ResponseEntity<?> PostFavourite(@RequestParam String userName, @RequestParam Integer postId){
         Integer userId = 0;
         try {
             userId = userService.getUserByUsername(userName).getId();
@@ -93,23 +93,26 @@ public class PostController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
         }
         UserDetails details = userDetailsService.GetById(userId);
-        List<Post> favourites = details.getFavouriteIDs();
-        Optional<CarPost> carPost = carService.GetById(id);
+        Optional<CarPost> carPost = carService.GetById(postId);
         if(carPost.isPresent()){
-            favourites.add(carPost.get());
+            carPost.get().getUsers().add(details);
+            details.getFavouriteIDs().add(carPost.get());
+            carService.Update(carPost.get());
         }
         else {
-            Optional<TrailerPost> trailerPost = trailerService.GetById(id);
+            Optional<TrailerPost> trailerPost = trailerService.GetById(postId);
             if (trailerPost.isPresent()) {
-                favourites.add(trailerPost.get());
+                trailerPost.get().getUsers().add(details);
+                details.getFavouriteIDs().add(trailerPost.get());
+                trailerService.Update(trailerPost.get());
             } else {
-                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No post with the id " + id.toString() + " was found");
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No post with the id " + postId.toString() + " was found");
             }
         }
         userDetailsService.Update(details);
         return ResponseEntity.status(HttpStatus.OK).body("OK");
     }
-    @GetMapping("getFavourites/{userName}")
+    @GetMapping("/getFavourites/{userName}")
     public ResponseEntity<?> GetFavourites(@PathVariable String userName){
         Integer userId = 0;
         try {
@@ -121,5 +124,19 @@ public class PostController {
         }
         UserDetails details = userDetailsService.GetById(userId);
         return ResponseEntity.status(HttpStatus.OK).body(details.getFavouriteIDs());
+    }
+    @GetMapping("/isFavourite")
+    public ResponseEntity<?> IsFavourite(@RequestParam String userName, @RequestParam Integer Id){
+        Integer userId = 0;
+        try {
+            userId = userService.getUserByUsername(userName).getId();
+        }
+        catch (Exception e)
+        {
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("The user was not found");
+        }
+        UserDetails details = userDetailsService.GetById(userId);
+        Boolean isPresent = details.getFavouriteIDs().stream().anyMatch(post -> post.getId() == Id);
+        return ResponseEntity.status(HttpStatus.OK).body(isPresent);
     }
 }
