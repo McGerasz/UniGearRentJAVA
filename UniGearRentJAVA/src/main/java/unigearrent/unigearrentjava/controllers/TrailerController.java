@@ -34,14 +34,14 @@ public class TrailerController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @PostMapping()
-    public ResponseEntity<?> PostTrailer(@RequestBody TrailerPost post, @RequestParam String username){
+    @PostMapping("/")
+    public ResponseEntity<?> PostTrailer(@RequestBody TrailerPost post, @RequestParam String userName){
         try{
-            Integer id = userService.getUserByUsername(username).getId();
+            Integer id = userService.getUserByUsername(userName).getId();
             post.setPosterId(id);
             post.setLessorDetails(lessorDetailsService.GetById(id));
             trailerService.SaveTrailer(post);
-            return  ResponseEntity.status(HttpStatus.CREATED).body(null);
+            return  ResponseEntity.status(HttpStatus.CREATED).body(new Object());
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
