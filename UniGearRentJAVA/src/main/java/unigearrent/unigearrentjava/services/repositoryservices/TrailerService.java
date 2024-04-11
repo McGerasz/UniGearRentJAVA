@@ -47,6 +47,7 @@ public class TrailerService {
         existingPost.setSecurityDeposit(post.getSecurityDeposit());
         existingPost.setWidth(post.getWidth());
         existingPost.setLength(post.getLength());
+        if((long) post.getUsers().size() > 0) existingPost.setUsers(post.getUsers());
         _repository.save(existingPost);
     }
 }

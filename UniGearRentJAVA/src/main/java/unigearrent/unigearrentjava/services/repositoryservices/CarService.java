@@ -46,6 +46,7 @@ public class CarService {
         existingPost.setSecurityDeposit(post.getSecurityDeposit());
         existingPost.setCanItBeDelivered(post.getCanItBeDelivered());
         existingPost.setNumberOfSeats(post.getNumberOfSeats());
+        if((long) post.getUsers().size() > 0) existingPost.setUsers(post.getUsers());
         _repository.save(existingPost);
     }
 }
