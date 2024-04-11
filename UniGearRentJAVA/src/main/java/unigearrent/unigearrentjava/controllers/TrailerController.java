@@ -41,7 +41,7 @@ public class TrailerController {
             post.setPosterId(id);
             post.setLessorDetails(lessorDetailsService.GetById(id));
             trailerService.SaveTrailer(post);
-            return  ResponseEntity.status(HttpStatus.CREATED).body(new Object());
+            return  ResponseEntity.status(HttpStatus.CREATED).body(post.getName());
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
