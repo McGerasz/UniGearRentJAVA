@@ -33,14 +33,14 @@ public class CarController {
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body(null);
         }
     }
-    @PostMapping()
-    public ResponseEntity<?> PostCar(@RequestBody CarPost post, @RequestParam String username){
+    @PostMapping("/")
+    public ResponseEntity<?> PostCar(@RequestBody CarPost post, @RequestParam String userName){
         try{
-            Integer id = userService.getUserByUsername(username).getId();
+            Integer id = userService.getUserByUsername(userName).getId();
             post.setPosterId(id);
             post.setLessorDetails(lessorDetailsService.GetById(id));
             carService.SaveCar(post);
-            return  ResponseEntity.status(HttpStatus.CREATED).body(null);
+            return  ResponseEntity.status(HttpStatus.CREATED).body(post.getName());
         }
         catch (Exception e){
             return ResponseEntity.status(HttpStatus.BAD_REQUEST).body(e);
