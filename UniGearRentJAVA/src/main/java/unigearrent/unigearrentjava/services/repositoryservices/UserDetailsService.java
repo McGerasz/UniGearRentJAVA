@@ -41,7 +41,8 @@ public class UserDetailsService {
     public void Update(UserDetails details) {
         UserDetails existingDetails = GetById(details.getId());
         existingDetails.setFirstName(details.getFirstName());
-        existingDetails.setLastName(details.getFirstName());
+        existingDetails.setLastName(details.getLastName());
+        existingDetails.setFavouriteIDs(details.getFavouriteIDs());
         _repository.save(existingDetails);
     }
 }
