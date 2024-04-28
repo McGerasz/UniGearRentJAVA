@@ -166,4 +166,30 @@ public class PostController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
+
+    @GetMapping("lessorPageData/{id}")
+    public ResponseEntity<?> LessorPageData(@PathVariable Integer id, Optional<String> userName){
+        LessorDetails details;
+        try{
+            details = lessorDetailsService.GetById(id);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No lessor with the provided id was found");
+        }
+        LessorPageDataResponseDTO data = new LessorPageDataResponseDTO();
+        data.setName(details.getName());
+        data.setPosts(details.getPosts());
+        if (userName.isPresent()){
+            try {
+                userService.getUserByUsername(userName.get()); //validate that use actually exists
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user with the provided username was found");
+            }
+            User lessor = userService.getUserById(id);
+            data.setEmail(lessor.getEmail());
+            data.setPhoneNumber(lessor.getPhoneNumber());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
 }
