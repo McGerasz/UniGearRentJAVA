@@ -2,15 +2,17 @@ package unigearrent.unigearrentjava.models;
 
 import lombok.AllArgsConstructor;
 import lombok.Getter;
+import lombok.NoArgsConstructor;
 import lombok.Setter;
 
-@AllArgsConstructor
-@Getter
+import java.util.List;
+
+@NoArgsConstructor
 @Setter
-public class LoginResponseDTO {
-    private String UserName;
+@Getter
+public class LessorPageDataResponseDTO {
+    private String Name;
     private String PhoneNumber;
-    private String Token;
-    private Integer Id;
     private String Email;
+    private List<Post> Posts;
 }

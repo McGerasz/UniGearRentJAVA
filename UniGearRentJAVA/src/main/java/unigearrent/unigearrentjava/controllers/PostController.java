@@ -166,4 +166,107 @@ public class PostController {
         }
         return ResponseEntity.status(HttpStatus.OK).body("Deleted");
     }
+
+    @GetMapping("lessorPageData/{id}")
+    public ResponseEntity<?> LessorPageData(@PathVariable Integer id, Optional<String> userName){
+        LessorDetails details;
+        try{
+            details = lessorDetailsService.GetById(id);
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No lessor with the provided id was found");
+        }
+        LessorPageDataResponseDTO data = new LessorPageDataResponseDTO();
+        data.setName(details.getName());
+        data.setPosts(details.getPosts());
+        if (userName.isPresent()){
+            try {
+                userService.getUserByUsername(userName.get()); //validate that use actually exists
+            }
+            catch (Exception e){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("No user with the provided username was found");
+            }
+            User lessor = userService.getUserById(id);
+            data.setEmail(lessor.getEmail());
+            data.setPhoneNumber(lessor.getPhoneNumber());
+        }
+        return ResponseEntity.status(HttpStatus.OK).body(data);
+    }
+    @GetMapping("profileDetails/{id}")
+    public ResponseEntity<?> ProfileDetails(@PathVariable Integer id){
+        try{
+            LessorDetails details1 = lessorDetailsService.GetById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(details1);
+        }
+        catch (Exception e){
+            try {
+                UserDetails details2 = userDetailsService.GetById(id);
+                return ResponseEntity.status(HttpStatus.OK).body(details2);
+            }
+            catch (Exception e2){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+            }
+        }
+    }
+    @PutMapping("lessor")
+    public ResponseEntity<?> LessorPut(@RequestBody LessorPutRequestDTO request){
+        User user;
+        try {
+            user = userService.getUserById(request.getId());
+        }
+        catch (Exception e){
+            System.out.println(e);
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhonenumber());
+        LessorDetails details;
+        try {
+            details = lessorDetailsService.GetById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested user's id belongs to a different account type");
+        }
+        details.setName(request.getName());
+        userService.updateUser(user);
+        lessorDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+    @PutMapping("user")
+    public ResponseEntity<?> UserPut(@RequestBody UserPutRequestDTO request){
+        User user;
+        try {
+            user = userService.getUserById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhonenumber());
+        UserDetails details;
+        try {
+            details = userDetailsService.GetById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested user's id belongs to a different account type");
+        }
+        details.setFirstName(request.getFirstName());
+        details.setLastName(request.getLastName());
+        userService.updateUser(user);
+        userDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+    @DeleteMapping("profile/{id}")
+    public ResponseEntity<?> DeleteAccount(@PathVariable Integer id){
+        userService.deleteUser(id);
+        try{
+            lessorDetailsService.Delete(lessorDetailsService.GetById(id));
+        }
+        catch (Exception e){
+            userDetailsService.Delete(userDetailsService.GetById(id));
+        }
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
 }
