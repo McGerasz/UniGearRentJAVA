@@ -209,12 +209,13 @@ public class PostController {
         }
     }
     @PutMapping("lessor")
-    public ResponseEntity<?> LessorPut(LessorPutRequestDTO request){
+    public ResponseEntity<?> LessorPut(@RequestBody LessorPutRequestDTO request){
         User user;
         try {
             user = userService.getUserById(request.getId());
         }
         catch (Exception e){
+            System.out.println(e);
             return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
         }
         user.setUsername(request.getUsername());
@@ -233,7 +234,7 @@ public class PostController {
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
     @PutMapping("user")
-    public ResponseEntity<?> UserPut(UserPutRequestDTO request){
+    public ResponseEntity<?> UserPut(@RequestBody UserPutRequestDTO request){
         User user;
         try {
             user = userService.getUserById(request.getId());
@@ -255,6 +256,17 @@ public class PostController {
         details.setLastName(request.getLastName());
         userService.updateUser(user);
         userDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+    @DeleteMapping("profile/{id}")
+    public ResponseEntity<?> DeleteAccount(@PathVariable Integer id){
+        userService.deleteUser(id);
+        try{
+            lessorDetailsService.Delete(lessorDetailsService.GetById(id));
+        }
+        catch (Exception e){
+            userDetailsService.Delete(userDetailsService.GetById(id));
+        }
         return ResponseEntity.status(HttpStatus.OK).body("");
     }
 }
