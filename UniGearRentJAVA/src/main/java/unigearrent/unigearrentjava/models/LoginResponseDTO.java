@@ -12,4 +12,5 @@ public class LoginResponseDTO {
     private String PhoneNumber;
     private String Token;
     private Integer Id;
+    private String Email;
 }

@@ -105,10 +105,10 @@ public class AuthenticationService {
             String token = tokenService.generateJwt(auth, userRepository.getUserByEmail(email).get());
 
             User user = userRepository.getUserByEmail(email).get();
-            return new LoginResponseDTO(user.getUsername(), user.getPhoneNumber(), token, user.getId());
+            return new LoginResponseDTO(user.getUsername(), user.getPhoneNumber(), token, user.getId(), user.getEmail());
 
         }catch (AuthenticationException e) {
-            return new LoginResponseDTO("", "", "", 0);
+            return new LoginResponseDTO("", "", "", 0, "");
         }
     }
 }
