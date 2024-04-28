@@ -25,7 +25,7 @@ public class LessorDetailsService {
     }
     public LessorDetails GetById(Integer id){
         try{
-            return _repository.getById(id);
+            return _repository.findById(id).get();
         }
         catch (Exception e){
             throw new RuntimeException("Error getting car with id " + id);
