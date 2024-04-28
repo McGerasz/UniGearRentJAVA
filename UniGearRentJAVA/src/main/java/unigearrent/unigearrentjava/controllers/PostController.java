@@ -192,4 +192,20 @@ public class PostController {
         }
         return ResponseEntity.status(HttpStatus.OK).body(data);
     }
+    @GetMapping("profileDetails/{id}")
+    public ResponseEntity<?> ProfileDetails(@PathVariable Integer id){
+        try{
+            LessorDetails details1 = lessorDetailsService.GetById(id);
+            return ResponseEntity.status(HttpStatus.OK).body(details1);
+        }
+        catch (Exception e){
+            try {
+                UserDetails details2 = userDetailsService.GetById(id);
+                return ResponseEntity.status(HttpStatus.OK).body(details2);
+            }
+            catch (Exception e2){
+                return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+            }
+        }
+    }
 }
