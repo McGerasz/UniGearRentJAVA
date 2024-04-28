@@ -208,4 +208,53 @@ public class PostController {
             }
         }
     }
+    @PutMapping("lessor")
+    public ResponseEntity<?> LessorPut(LessorPutRequestDTO request){
+        User user;
+        try {
+            user = userService.getUserById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhonenumber());
+        LessorDetails details;
+        try {
+            details = lessorDetailsService.GetById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested user's id belongs to a different account type");
+        }
+        details.setName(request.getName());
+        userService.updateUser(user);
+        lessorDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
+    @PutMapping("user")
+    public ResponseEntity<?> UserPut(UserPutRequestDTO request){
+        User user;
+        try {
+            user = userService.getUserById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.NOT_FOUND).body("");
+        }
+        user.setUsername(request.getUsername());
+        user.setEmail(request.getEmail());
+        user.setPhoneNumber(request.getPhonenumber());
+        UserDetails details;
+        try {
+            details = userDetailsService.GetById(request.getId());
+        }
+        catch (Exception e){
+            return ResponseEntity.status(HttpStatus.BAD_REQUEST).body("The requested user's id belongs to a different account type");
+        }
+        details.setFirstName(request.getFirstName());
+        details.setLastName(request.getLastName());
+        userService.updateUser(user);
+        userDetailsService.Update(details);
+        return ResponseEntity.status(HttpStatus.OK).body("");
+    }
 }
