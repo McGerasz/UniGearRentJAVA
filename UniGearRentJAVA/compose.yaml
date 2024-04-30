@@ -7,3 +7,8 @@ services:
       - 'POSTGRES_USER=PlaceholderUser'
     ports:
       - '5432'
+
+  unigearrent-frontend:
+    image: "mcgerasz/unigearrent-frontend"
+    ports:
+      - '3000:3000'
