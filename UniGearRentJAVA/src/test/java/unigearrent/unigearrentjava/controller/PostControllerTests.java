@@ -78,10 +78,17 @@ public class PostControllerTests {
         post4.setLocation("Location2");
         post4.setLessorDetails(details2);
         details2.getPosts().add(post4);
+        BDDMockito.given(carService.GetAll()).willReturn(new ArrayList<>(){{add(post1); add(post2);}});
+        BDDMockito.given(trailerService.GetAll()).willReturn(new ArrayList<>(){{add(post4); add(post3);}});
     }
     @Test
     public void ByNameReturnsTheRightAmountOfEntries() throws Exception{
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/byName/poster1"));
         Assertions.assertEquals(2, objectMapper.readValue(response.andReturn().getResponse().getContentAsString(), Set.class).size());
+    }
+    @Test
+    public void ByLocationReturnsTheRightAmountOfEntries() throws Exception{
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/byLocation/location2"));
+        Assertions.assertEquals(1, objectMapper.readValue(response.andReturn().getResponse().getContentAsString(), Set.class).size());
     }
 }
