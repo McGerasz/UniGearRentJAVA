@@ -61,6 +61,18 @@ public class PostControllerTests {
         user1.setPhoneNumber("06201111111");
         user1.setUsername("test123");
         userService.saveUser(user1);
+        User user2 = new User();
+        user2.setId(2);
+        user2.setEmail("test2@test.com");
+        user2.setUsername("poster1username");
+        user2.setPhoneNumber("06202222222");
+        userService.saveUser(user2);
+        User user3 = new User();
+        user3.setId(3);
+        user3.setEmail("test3@test.com");
+        user3.setUsername("poster2username");
+        user3.setPhoneNumber("06203333333");
+        userService.saveUser(user3);
         UserDetails uDetails1 = new UserDetails();
         uDetails1.setId(1);
         uDetails1.setFirstName("Test1");
@@ -134,6 +146,11 @@ public class PostControllerTests {
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/lessorPageData/2"));
         Assertions.assertEquals('"' +"Poster1"+ '"',
                 new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("name").toString());
-
+    }
+    @Test
+    public void LessorPageDataReturnsAllContentWithUsername() throws Exception{
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/lessorPageData/3?userName=test123"));
+        Assertions.assertEquals('"' + "test3@test.com" + '"',
+                new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("email").toString());
     }
 }
