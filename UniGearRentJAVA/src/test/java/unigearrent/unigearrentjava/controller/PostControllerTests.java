@@ -18,10 +18,7 @@ import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import unigearrent.unigearrentjava.controllers.PostController;
-import unigearrent.unigearrentjava.models.CarPost;
-import unigearrent.unigearrentjava.models.LessorDetails;
-import unigearrent.unigearrentjava.models.Post;
-import unigearrent.unigearrentjava.models.TrailerPost;
+import unigearrent.unigearrentjava.models.*;
 import unigearrent.unigearrentjava.repositories.ICarRepository;
 import unigearrent.unigearrentjava.services.repositoryservices.*;
 
@@ -90,6 +87,17 @@ public class PostControllerTests {
         carService.SaveCar(post2);
         trailerService.SaveTrailer(post3);
         trailerService.SaveTrailer(post4);
+        User user1 = new User();
+        user1.setId(1);
+        user1.setEmail("test@test.com");
+        user1.setPhoneNumber("06201111111");
+        user1.setUsername("test123");
+        userService.saveUser(user1);
+        UserDetails uDetails1 = new UserDetails();
+        uDetails1.setId(1);
+        uDetails1.setFirstName("Test1");
+        uDetails1.setLastName("Test2");
+        userDetailsService.SaveUserDetails(uDetails1);
     }
     @Test
     public void ByNameReturnsTheRightAmountOfEntries() throws Exception{
@@ -100,5 +108,12 @@ public class PostControllerTests {
     public void ByLocationReturnsTheRightAmountOfEntries() throws Exception{
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/byLocation/location2"));
         Assertions.assertEquals(1, objectMapper.readValue(response.andReturn().getResponse().getContentAsString(), Set.class).size());
+    }
+    @Test
+    public void PostFavouriteSavesFavourite() throws Exception {
+        ResultActions response1 = mockMvc.perform(MockMvcRequestBuilders.post("/api/Post/favourite?userName=test123&postId=2"));
+        ResultActions response2 = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/isFavourite?userName=test123&Id=2"));
+
+        Assertions.assertEquals("true", response2.andReturn().getResponse().getContentAsString());
     }
 }
