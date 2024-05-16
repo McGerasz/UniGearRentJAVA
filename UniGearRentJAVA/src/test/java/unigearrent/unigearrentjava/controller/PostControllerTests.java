@@ -1,6 +1,7 @@
 package unigearrent.unigearrentjava.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.nimbusds.jose.shaded.gson.JsonParser;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -54,12 +55,23 @@ public class PostControllerTests {
     @BeforeEach
     void init(){
         if(!carService.GetAll().isEmpty()) return;
+        User user1 = new User();
+        user1.setId(1);
+        user1.setEmail("test@test.com");
+        user1.setPhoneNumber("06201111111");
+        user1.setUsername("test123");
+        userService.saveUser(user1);
+        UserDetails uDetails1 = new UserDetails();
+        uDetails1.setId(1);
+        uDetails1.setFirstName("Test1");
+        uDetails1.setLastName("Test2");
+        userDetailsService.SaveUserDetails(uDetails1);
         int idBase = carService.GetAll().size() + trailerService.GetAll().size();
         LessorDetails details1 = new LessorDetails();
-        details1.setPosterId(1);
+        details1.setPosterId(2);
         details1.setName("Poster1");
         LessorDetails details2 = new LessorDetails();
-        details2.setPosterId(2);
+        details2.setPosterId(3);
         details2.setName("Poster2");
         CarPost post1 = new CarPost();
         post1.setId(idBase + 1);
@@ -87,17 +99,6 @@ public class PostControllerTests {
         carService.SaveCar(post2);
         trailerService.SaveTrailer(post3);
         trailerService.SaveTrailer(post4);
-        User user1 = new User();
-        user1.setId(1);
-        user1.setEmail("test@test.com");
-        user1.setPhoneNumber("06201111111");
-        user1.setUsername("test123");
-        userService.saveUser(user1);
-        UserDetails uDetails1 = new UserDetails();
-        uDetails1.setId(1);
-        uDetails1.setFirstName("Test1");
-        uDetails1.setLastName("Test2");
-        userDetailsService.SaveUserDetails(uDetails1);
     }
     @Test
     public void ByNameReturnsTheRightAmountOfEntries() throws Exception{
@@ -115,5 +116,11 @@ public class PostControllerTests {
         ResultActions response2 = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/isFavourite?userName=test123&Id=2"));
 
         Assertions.assertEquals("true", response2.andReturn().getResponse().getContentAsString());
+    }
+    @Test
+    public void ProfileDetailsReturnsUserDetails() throws Exception {
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/profileDetails/1"));
+        Assertions.assertEquals('"' + "Test2" + '"',
+                new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("lastName").toString());
     }
 }
