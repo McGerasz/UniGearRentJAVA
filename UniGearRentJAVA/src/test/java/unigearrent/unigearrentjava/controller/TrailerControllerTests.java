@@ -9,6 +9,7 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
+import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -16,26 +17,28 @@ import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
 import org.springframework.test.web.servlet.result.MockMvcResultMatchers;
 import unigearrent.unigearrentjava.controllers.TrailerController;
 import unigearrent.unigearrentjava.models.TrailerPost;
+import unigearrent.unigearrentjava.services.repositoryservices.CarService;
 import unigearrent.unigearrentjava.services.repositoryservices.TrailerService;
 import unigearrent.unigearrentjava.services.repositoryservices.LessorDetailsService;
 import unigearrent.unigearrentjava.services.repositoryservices.UserService;
 
 import java.util.Optional;
 
-@WebMvcTest(controllers = TrailerController.class)
+@SpringBootTest
 @AutoConfigureMockMvc(addFilters = false)
-@ExtendWith(MockitoExtension.class)
 public class TrailerControllerTests {
     @Autowired
     private MockMvc mockMvc;
 
-    @MockBean
+    @Autowired
     private TrailerService trailerService;
+    @Autowired
+    private CarService carService;
 
-    @MockBean
+    @Autowired
     private LessorDetailsService lessorService;
 
-    @MockBean
+    @Autowired
     private UserService userService;
 
     @Autowired
@@ -48,11 +51,12 @@ public class TrailerControllerTests {
     }
     @Test
     public void GetReturnsTheRightItem() throws Exception {
+        Integer id = trailerService.GetAll().size() + carService.GetAll().size() + 1;
         TrailerPost post = new TrailerPost();
-        post.setId(2);
-        BDDMockito.given(trailerService.GetById(2)).willReturn(Optional.of(post));
+        post.setId(id);
+        trailerService.SaveTrailer(post);
 
-        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Trailer/2"));
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Trailer/" + id));
         Assertions.
                 assertEquals(objectMapper.readValue(response.andReturn().getResponse().getContentAsString(),
                         TrailerPost.class).getId(), post.getId());
