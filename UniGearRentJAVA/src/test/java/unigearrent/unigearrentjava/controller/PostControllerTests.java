@@ -123,4 +123,10 @@ public class PostControllerTests {
         Assertions.assertEquals('"' + "Test2" + '"',
                 new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("lastName").toString());
     }
+    @Test
+    public void ProfileDetailsReturnsLessorDetails() throws Exception {
+        ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/profileDetails/3"));
+        Assertions.assertEquals('"' + "Poster2" + '"',
+                new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("name").toString());
+    }
 }
