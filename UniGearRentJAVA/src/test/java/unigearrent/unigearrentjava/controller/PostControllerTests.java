@@ -151,6 +151,18 @@ public class PostControllerTests {
         details3.setPosterId(5);
         details3.setName("Poster3ToBeUpdated");
         lessorDetailsService.SaveLessorDetails(details3);
+
+        User user6 = new User();
+        user6.setId(6);
+        user6.setEmail("test6@test.com");
+        user6.setPhoneNumber("06206666666");
+        user6.setUsername("LessorToDeleted");
+        userService.saveUser(user6);
+
+        LessorDetails details4 = new LessorDetails();
+        details4.setPosterId(6);
+        details4.setName("ImGonnaBeDeleted:(");
+        lessorDetailsService.SaveLessorDetails(details4);
     }
     @Test
     public void ByNameReturnsTheRightAmountOfEntries() throws Exception{
@@ -212,5 +224,10 @@ public class PostControllerTests {
                         new UserPutRequestDTO(4, "UserToBeUpdated", "test4@test.com",
                                 "06204444444", "ToBe",updateValue))));
         Assertions.assertEquals(updateValue, userDetailsService.GetById(4).getLastName());
+    }
+    @Test
+    public void DeleteProfileTest() throws Exception{
+        ResultActions responbse = mockMvc.perform(MockMvcRequestBuilders.delete("/api/Post/profile/6"));
+        Assertions.assertEquals(null, userService.getUserById(6));
     }
 }
