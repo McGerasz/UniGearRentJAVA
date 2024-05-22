@@ -28,7 +28,7 @@ public class LessorDetailsService {
             return _repository.findById(id).get();
         }
         catch (Exception e){
-            throw new RuntimeException("Error getting car with id " + id);
+            throw new RuntimeException("Error getting lessor details with id " + id);
         }
     }
     public void Delete(LessorDetails post){
