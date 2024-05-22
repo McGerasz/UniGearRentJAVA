@@ -15,6 +15,7 @@ import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMock
 import org.springframework.boot.test.autoconfigure.web.servlet.WebMvcTest;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
+import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
 import org.springframework.test.web.servlet.request.MockMvcRequestBuilders;
@@ -143,12 +144,12 @@ public class PostControllerTests {
         user5.setId(5);
         user5.setEmail("test5@test.com");
         user5.setPhoneNumber("06205555555");
-        user5.setUsername("UserToBeUpdated");
+        user5.setUsername("LessorToBeUpdated");
         userService.saveUser(user5);
 
         LessorDetails details3 = new LessorDetails();
-        details1.setPosterId(5);
-        details1.setName("Poster3ToBeUpdated");
+        details3.setPosterId(5);
+        details3.setName("Poster3ToBeUpdated");
         lessorDetailsService.SaveLessorDetails(details3);
     }
     @Test
@@ -191,5 +192,15 @@ public class PostControllerTests {
         ResultActions response = mockMvc.perform(MockMvcRequestBuilders.get("/api/Post/lessorPageData/3?userName=test123"));
         Assertions.assertEquals('"' + "test3@test.com" + '"',
                 new JsonParser().parse(response.andReturn().getResponse().getContentAsString()).getAsJsonObject().get("email").toString());
+    }
+    @Test
+    public void LessorPutEndpointTest() throws Exception{
+        String updateValue = "LessorHasUpdated";
+        ResultActions response= mockMvc.perform(MockMvcRequestBuilders.put("/api/Post/lessor")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(
+                        new LessorPutRequestDTO(5, "LessorToBeUpdated", "test5@test.com",
+                                "06205555555", updateValue))));
+        Assertions.assertEquals(updateValue, lessorDetailsService.GetById(5).getName());
     }
 }
