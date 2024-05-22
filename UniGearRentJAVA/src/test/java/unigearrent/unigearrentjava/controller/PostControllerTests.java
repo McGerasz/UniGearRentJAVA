@@ -55,62 +55,101 @@ public class PostControllerTests {
     @BeforeEach
     void init(){
         if(!carService.GetAll().isEmpty()) return;
+        
         User user1 = new User();
         user1.setId(1);
         user1.setEmail("test@test.com");
         user1.setPhoneNumber("06201111111");
         user1.setUsername("test123");
         userService.saveUser(user1);
+        
         User user2 = new User();
         user2.setId(2);
         user2.setEmail("test2@test.com");
         user2.setUsername("poster1username");
         user2.setPhoneNumber("06202222222");
         userService.saveUser(user2);
+        
         User user3 = new User();
         user3.setId(3);
         user3.setEmail("test3@test.com");
         user3.setUsername("poster2username");
         user3.setPhoneNumber("06203333333");
         userService.saveUser(user3);
+        
         UserDetails uDetails1 = new UserDetails();
         uDetails1.setId(1);
         uDetails1.setFirstName("Test1");
         uDetails1.setLastName("Test2");
         userDetailsService.SaveUserDetails(uDetails1);
+        
         int idBase = carService.GetAll().size() + trailerService.GetAll().size();
+        
         LessorDetails details1 = new LessorDetails();
         details1.setPosterId(2);
         details1.setName("Poster1");
+        
         LessorDetails details2 = new LessorDetails();
         details2.setPosterId(3);
         details2.setName("Poster2");
+        
         CarPost post1 = new CarPost();
         post1.setId(idBase + 1);
         post1.setLocation("Location1");
         post1.setLessorDetails(details1);
         details1.getPosts().add(post1);
+        
         CarPost post2 = new CarPost();
         post2.setId(idBase + 2);
         post2.setLocation("Location1");
         post2.setLessorDetails(details1);
         details1.getPosts().add(post2);
+        
         TrailerPost post3 = new TrailerPost();
         post3.setId(idBase + 3);
         post3.setLocation("Location1");
         post3.setLessorDetails(details2);
         details2.getPosts().add(post3);
+        
         TrailerPost post4 = new TrailerPost();
         post4.setId(idBase + 4);
         post4.setLocation("Location2");
         post4.setLessorDetails(details2);
         details2.getPosts().add(post4);
+        
         lessorDetailsService.SaveLessorDetails(details1);
         lessorDetailsService.SaveLessorDetails(details2);
+        
         carService.SaveCar(post1);
         carService.SaveCar(post2);
+        
         trailerService.SaveTrailer(post3);
         trailerService.SaveTrailer(post4);
+
+        User user4 = new User();
+        user4.setId(4);
+        user4.setEmail("test4@test.com");
+        user4.setPhoneNumber("06204444444");
+        user4.setUsername("UserToBeUpdated");
+        userService.saveUser(user4);
+
+        UserDetails uDetails2 = new UserDetails();
+        uDetails2.setId(4);
+        uDetails2.setFirstName("ToBe");
+        uDetails2.setLastName("Updated");
+        userDetailsService.SaveUserDetails(uDetails2);
+
+        User user5 = new User();
+        user5.setId(5);
+        user5.setEmail("test5@test.com");
+        user5.setPhoneNumber("06205555555");
+        user5.setUsername("UserToBeUpdated");
+        userService.saveUser(user5);
+
+        LessorDetails details3 = new LessorDetails();
+        details1.setPosterId(5);
+        details1.setName("Poster3ToBeUpdated");
+        lessorDetailsService.SaveLessorDetails(details3);
     }
     @Test
     public void ByNameReturnsTheRightAmountOfEntries() throws Exception{
