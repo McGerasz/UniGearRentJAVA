@@ -30,7 +30,7 @@ public class UserDetailsService {
         try {
             return _repository.findById(id).get();
         } catch (Exception e) {
-            throw new RuntimeException("Error getting car with id " + id);
+            throw new RuntimeException("Error getting user details with id " + id);
         }
     }
 

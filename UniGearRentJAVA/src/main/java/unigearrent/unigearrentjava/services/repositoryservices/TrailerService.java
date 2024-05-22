@@ -29,7 +29,7 @@ public class TrailerService {
             return _repository.findById(id);
         }
         catch (Exception e){
-            throw new RuntimeException("Error getting car with id " + id);
+            throw new RuntimeException("Error getting trailer with id " + id);
         }
     }
     public void Delete(TrailerPost post){
