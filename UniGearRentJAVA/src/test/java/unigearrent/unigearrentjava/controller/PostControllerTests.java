@@ -203,4 +203,14 @@ public class PostControllerTests {
                                 "06205555555", updateValue))));
         Assertions.assertEquals(updateValue, lessorDetailsService.GetById(5).getName());
     }
+    @Test
+    public void UserPutEndpointTest() throws Exception{
+        String updateValue = "UserHasUpdated";
+        ResultActions response= mockMvc.perform(MockMvcRequestBuilders.put("/api/Post/user")
+                .contentType(MediaType.APPLICATION_JSON)
+                .content(objectMapper.writeValueAsString(
+                        new UserPutRequestDTO(4, "UserToBeUpdated", "test4@test.com",
+                                "06204444444", "ToBe",updateValue))));
+        Assertions.assertEquals(updateValue, userDetailsService.GetById(4).getLastName());
+    }
 }
